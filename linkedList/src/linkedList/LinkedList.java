@@ -73,9 +73,13 @@ class DoubleRecursiveLinkedListImpl implements LinkedList {
 
 	// retorna se a lista está ordenada
 	@Override
-	public boolean isSorted() {
-		return false;
-		// TODO Auto-generated method stub
+	public boolean isSorted(Node head) {
+		// Caso base: quando n ha elementos ou so um elemento
+		if (head.getData() == null || head.next.getData() == null) {
+			return true;
+		} else {
+			return (head.getData() < head.next.getData() && isSorted(head.next));
+		}
 	}
 
 	// adiciona o elemento em um determinado índice. Aqui você não pode alterar o
@@ -106,16 +110,42 @@ class DoubleRecursiveLinkedListImpl implements LinkedList {
 			newNode.setNext(nodeRef.next);
 			nodeRef.setNext(newNode);
 			newNode.setPrevious(nodeRef);
-			newNode.next.previous = new Node();
+			newNode.next.previous = newNode;
 		}
 	}
 
 	@Override
 	public void remove(int index) {
-		// TODO Auto-generated method stub
+		if (!(index > size())) {
+			if (size() == 1 && index == 0) {
+				this.head.setData(null);
+				this.last.setData(null);
+			}
 
+			if (index == 0) {
+				this.head = head.getNext();
+				head.setPrevious(new Node());
+			}
+
+			if (index == size()) {
+				this.last = last.getPrevious();
+				this.last.setNext(new Node());
+			}
+			Node aux = head;
+			int i = 0;
+			while (aux != null) {
+				if (i == index) {
+					Node prev = aux.previous;
+					Node nex = aux.next;
+					prev.setNext(nex);
+					nex.setPrevious(prev);
+				}
+				aux = aux.next;
+				i++;
+			}
+		}
+		throw new IndexOutOfBoundsException();
 	}
-
 }
 
 class Node {
@@ -137,12 +167,12 @@ class Node {
 		return this.data;
 	}
 
-	public Integer getNext() {
-		return this.next.getData();
+	public Node getNext() {
+		return this.next;
 	}
 
-	public Integer getPrevious() {
-		return this.previous.getData();
+	public Node getPrevious() {
+		return this.previous;
 	}
 
 	public void setData(Integer data) {
@@ -169,7 +199,7 @@ public interface LinkedList {
 
 	public int soma();
 
-	public boolean isSorted();
+	public boolean isSorted(Node head);
 
 	// Iterativos
 

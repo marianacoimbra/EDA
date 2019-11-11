@@ -34,6 +34,31 @@ class BST {
 			this.root.insert(value);
 		}
 	}
+
+	public BTNode search(int value) {
+		return search(this.root, value);
+	}
+
+	private BTNode search(BTNode node, int value) {
+		if (node == null) {
+			return null;
+		}
+		if (value == node.data) {
+			return node;
+		}
+		if (value < node.data) {
+			return search(node.left, value);
+		} else if (value > node.data) {
+			return search(node.right, value);
+		}
+	}
+
+	public void preOrder() {
+		if (!isEmpty()) {
+			this.root.preOrder();
+		}
+	}
+
 }
 
 class BTNode {
@@ -44,6 +69,16 @@ class BTNode {
 
 	public BTNode(int data) {
 		this.data = data;
+	}
+
+	public void preOrder() {
+		System.out.println(this.data + " ");
+		if (this.left != null) {
+			this.left.preOrder();
+		}
+		if (this.right != null) {
+			this.right.preOrder();
+		}
 	}
 
 	public void insert(int value) {
@@ -63,15 +98,5 @@ class BTNode {
 			}
 		}
 	}
-	
-	public void inOrder() {
-		if(this.left != null) {
-			this.left.inOrder();
-		}
-		System.out.print(this.data + " ");
-		if(this.right != null) {
-			this.right.inOrder();
-		}
-	}
-	
+
 }

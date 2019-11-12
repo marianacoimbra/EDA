@@ -1,102 +1,114 @@
 import java.util.Scanner;
 
-public class Valor_mais_proximo_bst {
-	public static void main(String[] args) {
-		Scanner entrada = new Scanner(System.in);
-		String[] array = entrada.nextLine().split(" ");
-		int[] inteiros = new int[array.length];
-		BST bst = new BST();
+class Valor_mais_proximo_bst {
 
-		for (int i = 0; i < inteiros.length; i++) {
-			inteiros[i] = Integer.parseInt(array[i]);
-		}
+    private No root;
+    private String preOrder = "";
 
-		// preenchimento da bst
-		for (int i = 0; i < inteiros.length; i++) {
-			bst.insert(inteiros[i]);
-		}
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+        Valor_mais_proximo_bst ovalor = new Valor_mais_proximo_bst();
 
-	}
+        String[] array = entrada.nextLine().split(" ");
+        int valor = Integer.parseInt(entrada.nextLine());
 
+        int[] valores = ovalor.toInt(array);
+
+        ovalor.insereValores(valores);
+
+        System.out.println(ovalor.preOrder());
+        System.out.println(ovalor.encontraMaisProximo(valor));
+    }
+
+    public int encontraMaisProximo(int valor) {
+        return achaMaisProximo(valor, this.root, this.root.value);
+    }
+
+    private int achaMaisProximo(int valor, No no, int proximo) {
+        if (no == null)
+            return proximo;
+
+        if (Math.abs(no.value - valor) < Math.abs(proximo - valor))
+            proximo = no.value;
+
+        if (valor < no.value)
+            return achaMaisProximo(valor, no.left, proximo);
+        else
+            return achaMaisProximo(valor, no.right, proximo);
+    }
+
+    private void insereValores(int[] valores) {
+        for (int i = 0; i < valores.length; i++)
+            this.add(valores[i]);
+    }
+
+    private int[] toInt(String[] entrada) {
+        int[] valores = new int[entrada.length];
+
+        for (int i = 0; i < valores.length; i++)
+            valores[i] = Integer.parseInt(entrada[i]);
+
+        return valores;
+    }
+
+    public void add(int element) {
+        if (this.isEmpty())
+            this.root = new No(element);
+        else
+            this.add(element, this.root, this.root);
+    }
+
+    public boolean isEmpty() {
+        return this.root == null;
+    }
+
+    private void add(int element, No no, No pai) {
+        if (no == null) {
+            No novo = new No(element);
+            novo.parent = pai;
+            if (element < pai.value) {
+                pai.left = novo;
+            } else {
+                pai.right = novo;
+            }
+        } else {
+            if (element < no.value) {
+                add(element, no.left, no);
+            } else {
+                add(element, no.right, no);
+            }
+        }
+    }
+
+    public String preOrder() {
+        String saida = "[";
+        saida += preOrder(this.root);
+        saida = saida.substring(0, saida.length() - 2);
+        saida += "]";
+        return saida;
+    }
+
+    private String preOrder(No node) {
+        String saida = node.value + ", ";
+        if (node.left != null)
+            saida += preOrder(node.left);
+        if (node.right != null)
+            saida += preOrder(node.right);
+        return saida;
+    }
 }
 
-class BST {
-	BTNode root;
+class No {
 
-	public boolean isEmpty() {
-		return this.root == null;
-	}
+    int value;
+    No left;
+    No right;
+    No parent;
 
-	public void insert(int value) {
-		if (isEmpty()) {
-			this.root = new BTNode(value);
-		} else {
-			this.root.insert(value);
-		}
-	}
-
-	public BTNode search(int value) {
-		return search(this.root, value);
-	}
-
-	private BTNode search(BTNode node, int value) {
-		if (node == null) {
-			return null;
-		}
-		if (value == node.data) {
-			return node;
-		}
-		if (value < node.data) {
-			return search(node.left, value);
-		} else if (value > node.data) {
-			return search(node.right, value);
-		}
-	}
-
-	public void preOrder() {
-		if (!isEmpty()) {
-			this.root.preOrder();
-		}
-	}
-
-}
-
-class BTNode {
-	int data;
-	BTNode right;
-	BTNode left;
-	BTNode parent;
-
-	public BTNode(int data) {
-		this.data = data;
-	}
-
-	public void preOrder() {
-		System.out.println(this.data + " ");
-		if (this.left != null) {
-			this.left.preOrder();
-		}
-		if (this.right != null) {
-			this.right.preOrder();
-		}
-	}
-
-	public void insert(int value) {
-		if (value > this.data) {
-			if (this.right == null) {
-				BTNode newNode = new BTNode(value);
-				this.right = newNode;
-				newNode.parent = this;
-			} else {
-				this.right.insert(value);
-			}
-		} else if (value < this.data) {
-			if (this.left == null) {
-				BTNode newNode = new BTNode(value);
-				this.left = newNode;
-				newNode.parent = this;
-			}
-		}
-	}
-
+    public No(int value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+        this.parent = null;
+    }
 }

@@ -109,6 +109,7 @@ class Heap {
 		} else {
 			if (isValidIndex(right)) {
 				if (this.heap[left] < this.heap[right])
+
 					return right;
 			}
 

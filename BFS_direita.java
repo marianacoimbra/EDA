@@ -3,6 +3,8 @@ import java.util.ArrayList;
 
 import java.util.Scanner;
 
+import rotacoes.Node;
+
 class BFS_direita {
 
 	public static void main(String[] args) {
